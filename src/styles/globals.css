@@ -1,0 +1,114 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary-dark: #35374B;
+  --primary-medium: #344955;
+  --primary-light: #50727B;
+  --success: #78A083;
+  --warning: #F59E0B;
+  --danger: #EF4444;
+  --background: #F9FAFB;
+  --text-primary: #1F2937;
+  --text-secondary: #6B7280;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(135deg, #F9FAFB 0%, #F3F4F6 50%, #E5E7EB 100%);
+  min-height: 100vh;
+  position: relative;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(circle at 20% 80%, rgba(120, 160, 131, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(80, 114, 123, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(53, 55, 75, 0.05) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.bg-primary-dark {
+  background-color: var(--primary-dark);
+}
+
+.bg-primary-medium {
+  background-color: var(--primary-medium);
+}
+
+.bg-primary-light {
+  background-color: var(--primary-light);
+}
+
+.bg-success {
+  background-color: var(--success);
+}
+
+.bg-warning {
+  background-color: var(--warning);
+}
+
+.bg-danger {
+  background-color: var(--danger);
+}
+
+.bg-background {
+  background-color: var(--background);
+}
+
+.text-primary-dark {
+  color: var(--primary-dark);
+}
+
+.text-primary-medium {
+  color: var(--primary-medium);
+}
+
+.text-primary-light {
+  color: var(--primary-light);
+}
+
+.text-text-primary {
+  color: var(--text-primary);
+}
+
+.text-text-secondary {
+  color: var(--text-secondary);
+}
+
+.text-danger {
+  color: var(--danger);
+}
+
+/* Background Enhancements */
+.bg-white {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.shadow-md {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06), 
+              0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.shadow-lg {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05), 
+              0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+/* Page specific backgrounds */
+.page-background {
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(20px);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
