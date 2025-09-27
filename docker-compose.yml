@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  backend:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - DB_HOST=postgres
+      - DB_USER=topup_user
+      - DB_PASSWORD=topup_password
+      - DB_NAME=topup_db
+      - DB_PORT=5432
+      - JWT_SECRET=your-super-secret-jwt-key-change-in-production
+      - REDIS_URL=redis://redis:6379
+      # AWS S3 (optional)
+      # - AWS_S3_BUCKET=your-bucket-name
+      # - AWS_ACCESS_KEY_ID=your-access-key
+      # - AWS_SECRET_ACCESS_KEY=your-secret-key
+      # - AWS_REGION=ap-southeast-1
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - ./cdn:/root/cdn  # Mount local cdn directory
+
+  postgres:
+    image: postgres:15
+    environment:
+      - POSTGRES_DB=topup_db
+      - POSTGRES_USER=topup_user
+      - POSTGRES_PASSWORD=topup_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+volumes:
+  postgres_data:
