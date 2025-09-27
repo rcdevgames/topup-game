@@ -1739,6 +1739,59 @@ paths:
       summary: Create voucher
       tags:
       - admin
+  /api/csrf:
+    get:
+      consumes:
+      - application/json
+      description: Get CSRF token for form submission protection
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get CSRF token
+      tags:
+      - CSRF
+  /api/v1/csrf/validate:
+    post:
+      consumes:
+      - application/json
+      description: Validate if provided CSRF token is valid
+      parameters:
+      - description: CSRF Token
+        in: header
+        name: X-CSRF-Token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: success
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: error
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Validate CSRF token
+      tags:
+      - CSRF
   /auth/change-password:
     post:
       consumes:
@@ -2546,5 +2599,10 @@ securityDefinitions:
     description: Type "Bearer" followed by a space and JWT token.
     in: header
     name: Authorization
+    type: apiKey
+  CSRFToken:
+    description: CSRF token for form submission protection
+    in: header
+    name: X-CSRF-Token
     type: apiKey
 swagger: "2.0"

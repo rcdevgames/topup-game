@@ -18,6 +18,7 @@ type HandlerContainer struct {
 	TransactionHandler *TransactionHandler
 	FileUploadHandler  *FileUploadHandler
 	AnalyticsHandler   *AnalyticsHandler
+	CSRFHandler        *CSRFHandler
 }
 
 // NewHandlerContainer creates a new handler container
@@ -34,5 +35,6 @@ func NewHandlerContainer(services *services.ServiceContainer) *HandlerContainer 
 		TransactionHandler: NewTransactionHandler(services),
 		FileUploadHandler:  NewFileUploadHandler(services),
 		AnalyticsHandler:   NewAnalyticsHandler(services),
+		CSRFHandler:        NewCSRFHandler(),
 	}
 }

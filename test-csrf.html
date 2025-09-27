@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSRF Protection Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .container { max-width: 800px; }
+        .section { margin: 20px 0; padding: 20px; border: 1px solid #ccc; border-radius: 5px; }
+        button { padding: 10px 15px; margin: 5px; cursor: pointer; }
+        .success { color: green; }
+        .error { color: red; }
+        .token { background: #f0f0f0; padding: 10px; margin: 10px 0; word-break: break-all; }
+        pre { background: #f8f8f8; padding: 10px; border-left: 4px solid #007acc; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔒 CSRF Protection Test - Waw Store API</h1>
+        
+        <div class="section">
+            <h2>1. Get CSRF Token</h2>
+            <p>First, get a CSRF token from the server:</p>
+            <button onclick="getCSRFToken()">Get CSRF Token</button>
+            <div id="token-result"></div>
+        </div>
+
+        <div class="section">
+            <h2>2. Test Protected Endpoint (Without Token)</h2>
+            <p>Try to register a user without CSRF token (should fail):</p>
+            <button onclick="testWithoutCSRF()">Test Without CSRF Token</button>
+            <div id="without-csrf-result"></div>
+        </div>
+
+        <div class="section">
+            <h2>3. Test Protected Endpoint (With Token)</h2>
+            <p>Try to validate CSRF token (should succeed):</p>
+            <button onclick="testWithCSRF()">Test With CSRF Token</button>
+            <div id="with-csrf-result"></div>
+        </div>
+
+        <div class="section">
+            <h2>4. API Usage Examples</h2>
+            <h3>JavaScript Fetch Example:</h3>
+            <pre><code>// 1. Get CSRF Token
+const tokenResponse = await fetch('/api/csrf');
+const tokenData = await tokenResponse.json();
+const csrfToken = tokenData.data.token;
+
+// 2. Use token in POST request
+const response = await fetch('/api/auth/register', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': csrfToken  // Required for all POST/PUT/PATCH
+    },
+    body: JSON.stringify({
+        phone: '+628123456789',
+        password: 'password123'
+    })
+});</code></pre>
+
+            <h3>cURL Example:</h3>
+            <pre><code># 1. Get CSRF Token
+curl -X GET http://localhost:8080/api/csrf
+
+# 2. Use token in POST request
+curl -X POST http://localhost:8080/api/auth/register \
+  -H "Content-Type: application/json" \
+  -H "X-CSRF-Token: YOUR_TOKEN_HERE" \
+  -d '{"phone": "+628123456789", "password": "password123"}'</code></pre>
+        </div>
+    </div>
+
+    <script>
+        let currentCSRFToken = null;
+
+        async function getCSRFToken() {
+            try {
+                const response = await fetch('/api/csrf');
+                const data = await response.json();
+                
+                if (data.success) {
+                    currentCSRFToken = data.data.token;
+                    document.getElementById('token-result').innerHTML = `
+                        <div class="success">
+                            <p><strong>✅ CSRF Token obtained successfully!</strong></p>
+                            <div class="token"><strong>Token:</strong> ${data.data.token}</div>
+                            <p><strong>Expires:</strong> ${data.data.expires_at}</p>
+                            <p><strong>Usage:</strong></p>
+                            <ul>
+                                <li>Header: ${data.data.usage.header}</li>
+                                <li>Form field: ${data.data.usage.form_field}</li>
+                                <li>Query param: ${data.data.usage.query_param}</li>
+                            </ul>
+                        </div>
+                    `;
+                } else {
+                    document.getElementById('token-result').innerHTML = `
+                        <div class="error">❌ Failed to get CSRF token: ${data.message}</div>
+                    `;
+                }
+            } catch (error) {
+                document.getElementById('token-result').innerHTML = `
+                    <div class="error">❌ Error: ${error.message}</div>
+                `;
+            }
+        }
+
+        async function testWithoutCSRF() {
+            try {
+                const response = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                        // No CSRF token header
+                    },
+                    body: JSON.stringify({
+                        phone: '+628123456789',
+                        password: 'password123'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.status === 403) {
+                    document.getElementById('without-csrf-result').innerHTML = `
+                        <div class="success">
+                            <p><strong>✅ CSRF Protection Working!</strong></p>
+                            <p>Request was blocked as expected (Status: ${response.status})</p>
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                    `;
+                } else {
+                    document.getElementById('without-csrf-result').innerHTML = `
+                        <div class="error">
+                            <p><strong>⚠️ Unexpected Response</strong></p>
+                            <p>Status: ${response.status}</p>
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                document.getElementById('without-csrf-result').innerHTML = `
+                    <div class="error">❌ Error: ${error.message}</div>
+                `;
+            }
+        }
+
+        async function testWithCSRF() {
+            if (!currentCSRFToken) {
+                document.getElementById('with-csrf-result').innerHTML = `
+                    <div class="error">❌ Please get CSRF token first!</div>
+                `;
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/csrf/validate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-Token': currentCSRFToken
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    document.getElementById('with-csrf-result').innerHTML = `
+                        <div class="success">
+                            <p><strong>✅ CSRF Token Valid!</strong></p>
+                            <p>Request succeeded with CSRF token (Status: ${response.status})</p>
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                    `;
+                } else {
+                    document.getElementById('with-csrf-result').innerHTML = `
+                        <div class="error">
+                            <p><strong>❌ CSRF Validation Failed</strong></p>
+                            <p>Status: ${response.status}</p>
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                document.getElementById('with-csrf-result').innerHTML = `
+                    <div class="error">❌ Error: ${error.message}</div>
+                `;
+            }
+        }
+
+        // Auto-load token on page load
+        window.addEventListener('DOMContentLoaded', getCSRFToken);
+    </script>
+</body>
+</html>

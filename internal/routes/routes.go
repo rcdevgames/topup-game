@@ -26,6 +26,13 @@ func SetupRoutes(router *gin.Engine, handlers *handlers.HandlerContainer, cfg *c
 
 // setupPublicRoutes sets up public routes that don't require authentication
 func setupPublicRoutes(api *gin.RouterGroup, handlers *handlers.HandlerContainer, cfg *config.Config) {
+	// CSRF routes (must be accessible without authentication)
+	csrf := api.Group("/csrf")
+	{
+		csrf.GET("", handlers.CSRFHandler.GetCSRFToken)
+		csrf.POST("/validate", middleware.CSRFCheck(), handlers.CSRFHandler.ValidateCSRF)
+	}
+
 	// Authentication routes
 	auth := api.Group("/auth")
 	{
@@ -58,8 +65,8 @@ func setupPublicRoutes(api *gin.RouterGroup, handlers *handlers.HandlerContainer
 
 // setupProtectedRoutes sets up routes that require user authentication
 func setupProtectedRoutes(api *gin.RouterGroup, handlers *handlers.HandlerContainer, cfg *config.Config) {
-	// Apply authentication middleware
-	protected := api.Group("", middleware.AuthMiddleware(cfg))
+	// Apply authentication middleware and CSRF protection
+	protected := api.Group("", middleware.AuthMiddleware(cfg), middleware.CSRFCheck())
 
 	// User profile routes
 	auth := protected.Group("/auth")
@@ -98,8 +105,8 @@ func setupAdminRoutes(api *gin.RouterGroup, handlers *handlers.HandlerContainer,
 		adminAuth.POST("/refresh-token", handlers.AdminHandler.RefreshToken)
 	}
 
-	// Protected admin routes
-	admin := api.Group("/admin", middleware.AdminAuthMiddleware(cfg))
+	// Protected admin routes with CSRF protection
+	admin := api.Group("/admin", middleware.AdminAuthMiddleware(cfg), middleware.CSRFCheck())
 	{
 		// Admin profile
 		admin.POST("/auth/logout", handlers.AdminHandler.Logout)

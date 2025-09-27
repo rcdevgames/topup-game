@@ -37,6 +37,11 @@ import (
 // @name Authorization
 // @description Type "Bearer" followed by a space and JWT token.
 
+// @securityDefinitions.apikey CSRFToken
+// @in header
+// @name X-CSRF-Token
+// @description CSRF token for form submission protection
+
 func main() {
 	// Load environment variables
 	if err := godotenv.Load(); err != nil {
@@ -71,6 +76,7 @@ func main() {
 	router.Use(gin.Recovery())
 	router.Use(middleware.CORS())
 	router.Use(middleware.SecurityHeaders())
+	router.Use(middleware.CSRFMiddleware()) // Add CSRF protection
 
 	// Static file serving for local CDN
 	router.Static("/cdn", cfg.Server.UploadDir)
