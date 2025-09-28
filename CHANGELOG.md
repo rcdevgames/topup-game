@@ -6,7 +6,14 @@
 - ✅ Full project scaffolding dengan Bun + React + Vite + TailwindCSS
 - ✅ Complete dependency setup: Zustand, SweetAlert2, Re### 🚀 **Advanced Admin Features**
 - ✅ **Real-time Analytics**: Dashboard statistics dengan sample data
-- ✅ **Mobile-First Responsive Design**: Complete mobile optimization untuk admin panel
+- ✅ **Mobile-First Responsive Design**: Complete mobile optimiza## � **Updated Implementation Statistics**
+- **Total Files**: ~30 files (20 customer + 10 admin + 5 Docker/deployment)
+- **Admin Components**: 6 admin components (Layout, Sidebar, Header, Login, dll)
+- **Admin Pages**: 5 admin pages (Dashboard, Users, Categories, Products, Vouchers)
+- **Admin Store**: 1 comprehensive adminStore.js dengan 20+ actions
+- **CRUD Operations**: 4 complete CRUD modules dengan validation
+- **Features**: 40+ total features (20 customer + 15 admin + 5 deployment)
+- **Docker Files**: 5 deployment files (Dockerfile, docker-compose.yml, nginx.conf, docker-entrypoint.sh, .env.example)tuk admin panel
 - ✅ **Cross-Device Admin Experience**:
   - Mobile: Card-based layouts, overlay sidebar, touch-optimized forms
   - Tablet: Adaptive layouts dengan optimal spacing
@@ -128,6 +135,94 @@
 - ✅ **Production Ready**: Responsive, accessible, error-handled
 - ✅ **Demo Available**: localhost:5173 dengan demo credentials
 - ✅ **Documentation Complete**: PRD updated, changelog created
+
+---
+
+## [v2.1.2] - 2025-09-26 - Docker Deployment dengan Runtime Environment Variables
+
+### 🐳 **Production-Ready Docker Deployment**
+- ✅ **Runtime Environment Variables Support**:
+  - Static build tetap bisa menggunakan environment variables saat runtime
+  - No rebuild required untuk ganti API_URL
+  - Hot reconfiguration dengan Docker restart
+  - Priority: `window.APP_CONFIG.API_URL` > `VITE_API_URL` > fallback
+
+- ✅ **Smart API Client** (`src/utils/api.js`):
+  ```javascript
+  const getApiUrl = () => {
+    return window.APP_CONFIG?.API_URL || 
+           import.meta.env.VITE_API_URL || 
+           'http://localhost:3000/api'
+  }
+  ```
+
+- ✅ **Docker Multi-stage Build**:
+  - Stage 1: Bun build untuk static files
+  - Stage 2: Nginx dengan runtime environment injection
+  - Optimized production image dengan caching
+
+- ✅ **Runtime Configuration System**:
+  - `docker-entrypoint.sh`: Environment injection script
+  - `config.js`: Runtime configuration file
+  - `nginx.conf`: Optimized Nginx setup dengan SPA support
+  - `index.html`: Runtime config loading
+
+### 🔧 **Docker Infrastructure**
+- ✅ **Production Nginx Setup**:
+  - SPA routing support (`try_files` directive)
+  - Static asset caching dengan 1 year expiry
+  - No-cache untuk runtime `config.js`
+  - Gzip compression untuk optimal performance
+  - Security headers (X-Frame-Options, X-Content-Type-Options, X-XSS-Protection)
+  - Health check endpoint `/health`
+
+- ✅ **Docker Compose Configuration**:
+  - Environment variable mapping
+  - Health checks dengan proper intervals
+  - Network configuration untuk production
+  - Port mapping optimization
+
+- ✅ **Development & Production Support**:
+  - `.env.example`: Environment template
+  - `DOCKER_DEPLOYMENT.md`: Comprehensive deployment guide
+  - Development mode: `VITE_API_URL` support
+  - Production mode: Runtime `API_URL` injection
+
+### 🚀 **Deployment Features**
+- ✅ **One Image, Multiple Environments**:
+  - Single Docker image untuk dev/staging/production
+  - Environment-specific configuration via Docker env vars
+  - No code changes required untuk different environments
+
+- ✅ **Container Optimization**:
+  - Multi-stage build untuk minimal image size
+  - Alpine Linux base untuk security dan performance
+  - Proper file permissions dan security practices
+  - Bash support untuk entrypoint scripts
+
+- ✅ **Configuration Management**:
+  ```bash
+  # Development
+  docker run -e API_URL=http://localhost:3000/api topup-game
+  
+  # Staging
+  docker run -e API_URL=https://api.staging.com/v1 topup-game
+  
+  # Production
+  docker run -e API_URL=https://api.production.com/v1 topup-game
+  ```
+
+### 📋 **Technical Implementation**
+- ✅ **Runtime Environment Priority**:
+  1. `window.APP_CONFIG.API_URL` (Docker environment, highest priority)
+  2. `import.meta.env.VITE_API_URL` (Build-time Vite environment)
+  3. `http://localhost:3000/api` (Fallback default)
+
+- ✅ **Production Optimizations**:
+  - Nginx caching strategy untuk static assets
+  - Security headers untuk production readiness
+  - Health check endpoints untuk monitoring
+  - Proper error handling untuk missing configurations
 
 ---
 
@@ -300,7 +395,7 @@
   ```jsx
   <Routes>
     <Route path="/admin/login" element={<AdminLogin />} />
-    <Route path="/admin/dashboard" element={<AdminLayout><Dashboard /></AdminLayout>} />
+    <Route path="/admin/" element={<AdminLayout><Dashboard /></AdminLayout>} />
     <Route path="/admin/users" element={<AdminLayout><AdminUsers /></AdminLayout>} />
     <Route path="/admin/categories" element={<AdminLayout><Categories /></AdminLayout>} />
     <Route path="/admin/products" element={<AdminLayout><Products /></AdminLayout>} />
@@ -355,6 +450,13 @@
 - **CRUD Operations**: 4 complete CRUD modules dengan validation
 - **Features**: 35+ total features (20 customer + 15 admin)
 
+## 🎯 **Version 2.1.2 Highlights**
+- ✅ **Production Docker Deployment**: Runtime environment variable support
+- ✅ **One Image, Multiple Environments**: Single build untuk dev/staging/production
+- ✅ **Hot Reconfiguration**: Change API_URL tanpa rebuild image
+- ✅ **Nginx Optimization**: Production-ready web server dengan caching dan security
+- ✅ **Smart Configuration**: Runtime priority dengan intelligent fallbacks
+
 ## 🎯 **Version 2.1.1 Highlights**
 - ✅ **Complete 404 System**: Dual 404 pages untuk customer dan admin contexts
 - ✅ **Smart Navigation**: Browser history aware dengan intelligent fallback routing
@@ -390,5 +492,5 @@
 ---
 
 **Latest Update**: September 26, 2025  
-**Current Version**: 2.1.1 - Complete 404 Error Handling + Mobile-First Admin Panel + Customer App  
-**Status**: ✅ Production-Ready Cross-Device Responsive Topup Game Platform
+**Current Version**: 2.1.2 - Production Docker Deployment + Complete 404 Error Handling + Mobile-First Admin Panel + Customer App  
+**Status**: ✅ Enterprise-Ready Containerized Topup Game Platform dengan Runtime Configuration

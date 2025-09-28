@@ -31,7 +31,7 @@ function AppContent() {
     return (
       <Routes>
         <Route path="/admin/login" element={<AdminLogin />} />
-        <Route path="/admin/dashboard" element={<AdminLayout><Dashboard /></AdminLayout>} />
+        <Route path="/admin/" element={<AdminLayout><Dashboard /></AdminLayout>} />
         <Route path="/admin/users" element={<AdminLayout><AdminUsers /></AdminLayout>} />
         <Route path="/admin/categories" element={<AdminLayout><Categories /></AdminLayout>} />
         <Route path="/admin/products" element={<AdminLayout><Products /></AdminLayout>} />

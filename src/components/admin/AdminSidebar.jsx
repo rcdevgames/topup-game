@@ -7,7 +7,7 @@ function AdminSidebar() {
 
   const menuItems = [
     {
-      path: '/admin/dashboard',
+      path: '/admin/',
       label: 'Dashboard',
       icon: 'fas fa-tachometer-alt',
       roles: ['super_admin', 'operator']

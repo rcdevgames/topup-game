@@ -38,7 +38,7 @@ function AdminLogin() {
         timer: 2000,
         showConfirmButton: false,
       }).then(() => {
-        navigate('/admin/dashboard');
+        navigate('/admin/');
       });
     } else {
       Swal.fire({
@@ -62,7 +62,7 @@ function AdminLogin() {
       timer: 2000,
       showConfirmButton: false,
     }).then(() => {
-      navigate('/admin/dashboard');
+      navigate('/admin/');
     });
   };
 
